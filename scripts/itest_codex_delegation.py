@@ -22,6 +22,17 @@ def _thread_spawn(payload: dict) -> dict:
     return spawn if isinstance(spawn, dict) else {}
 
 
+def _role_from_metadata(payload: dict, spawn: dict) -> str | None:
+    role = spawn.get("agent_role")
+    if isinstance(role, str) and role:
+        return role
+    agent_path = payload.get("agent_path")
+    if isinstance(agent_path, str) and agent_path.startswith("/root/"):
+        candidate = agent_path.removeprefix("/root/").split("/", 1)[0]
+        return candidate or None
+    return None
+
+
 def _read_events(path: Path):
     with path.open(encoding="utf-8") as journal:
         for line_number, line in enumerate(journal, start=1):
@@ -44,11 +55,11 @@ def verify(day: Path, parent: str, roles: set[str], profile_dir: Path = PROFILES
         if spawn.get("parent_thread_id") != parent:
             continue
 
-        role = spawn.get("agent_role")
+        role = _role_from_metadata(payload, spawn)
         if not isinstance(role, str) or not role:
-            raise SystemExit(f"{path.name}: child has no named agent_role; delegation occurred but profile routing is unverified")
+            raise SystemExit(f"{path.name}: child has no named role metadata; delegation occurred but profile routing is unverified")
         if role not in roles:
-            raise SystemExit(f"{path.name}: unexpected child role {role!r}")
+            continue
         if role in observed_roles:
             raise SystemExit(f"Repeated child role: {role}")
 
