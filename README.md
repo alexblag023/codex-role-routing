@@ -4,7 +4,7 @@ Codex custom agent profiles bind delegation roles to GPT models and reasoning ef
 
 ## Install
 
-Copy files from `.codex/agents/` into the target project's `.codex/agents/` directory. Start a new Codex session in that project. Delegate by profile name, for example `expert_review`. Codex loads the model and effort from the matching profile.
+Copy files from `.codex/agents/` into the target project's `.codex/agents/` directory. Mark the target project as trusted in Codex and start a new session there so the project-local agent profiles are loaded. In the structured subagent call, set `agent_type` to the profile name, for example `expert_review`; `task_name` is only a task identifier and does not select a profile. Leave model and effort unset so Codex reads both from the selected profile.
 
 Each profile comment records whether GPT was primary or backup in the source matrix. The profile pins that GPT route for Codex. It does not implement primary-provider selection or provider failover. `audit`, `classify`, `compliance_check`, `fact_check`, `patch_proposal`, and `source_synthesis` therefore run on their configured GPT backup in Codex, even though the matrix primary is `session_model`.
 
@@ -24,7 +24,11 @@ Validation fails on missing or extra roles and on any model/effort mismatch.
 
 ## Verify a live delegation
 
-Run a parent Codex session in a trusted project with the profiles installed. Use a Codex tool/API that passes each selected profile in its structured `agent_type` field, without model or effort overrides. Ask each child to return exactly `ROUTE_SMOKE <role>` without using tools, then wait for all children. Merely naming roles in natural language or asking `codex exec` to spawn them can create generic child threads and does not test the profiles. If the available interface has no structured `agent_type` selector, report the route as unverified.
+Run this smoke from the trusted project root with the profiles installed:
+
+    codex exec --json -s read-only -C C:\Claude\IT\codex-role-routing 'Call the subagent tool three times with these exact structured arguments. For each call set `task_name` to `route_<role>_smoke`, `agent_type` to the corresponding role (`architecture`, `audit`, `expert_review`), `fork_turns` to `none`, and `message` to `Reply exactly ROUTE_SMOKE <role> and do not use tools.` Do not set model or effort. Wait for all three children.'
+
+The parent process must read trusted project-local profiles. Mark the repository as trusted in Codex settings before using the command. Merely naming roles in natural language without setting `agent_type` creates generic children and does not test these profiles. If the interface lacks a structured `agent_type` selector, report the route as unverified.
 
 Find the parent thread ID and daily Codex session directory, then pass the exact set of requested roles to the verifier:
 
