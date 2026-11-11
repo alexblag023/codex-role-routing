@@ -39,6 +39,8 @@ def validate(matrix_path: Path, profile_dir: Path = PROFILE_DIR) -> list[str]:
         if not isinstance(role, str) or not role:
             errors.append(f"{path.name}: missing profile name")
             continue
+        if path.stem != role:
+            errors.append(f"{path.name}: filename does not match profile name {role!r}")
         if role in profiles:
             errors.append(f"{path.name}: duplicate profile name {role!r}")
             continue

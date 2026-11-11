@@ -1,0 +1,6 @@
+# GPT route in the source matrix: primary.
+name = "summarize"
+description = "Summarize source material, preserving important facts, qualifications and attribution."
+model = "gpt-6-luna"
+model_reasoning_effort = "medium"
+developer_instructions = "Summarize the assigned material within the requested scope and format. Preserve important facts, qualifications and attribution, distinguish uncertainty, and cite evidence when requested."

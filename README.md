@@ -20,7 +20,7 @@ To check a project's installed profiles against the same matrix:
 
     python scripts/check_role_profiles.py --profiles ../.codex/agents
 
-Validation fails on missing or extra roles and on any model/effort mismatch.
+Validation fails on missing or extra roles, filename/name disagreement and any model/effort mismatch.
 
 ## Verify a live delegation
 
@@ -38,7 +38,7 @@ The verifier checks each child journal for a named role, the model and effort re
 
 ## Contents
 
-- `.codex/agents/` contains profiles for 24 canonical roles.
+- `.codex/agents/` contains profiles for 30 canonical roles.
 - `scripts/check_role_profiles.py` verifies every profile against the approved matrix.
 - `scripts/itest_codex_delegation.py` verifies live named-role delegations against child journals.
 - `docs/` records mapping provenance.

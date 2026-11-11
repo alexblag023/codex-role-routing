@@ -1,0 +1,6 @@
+# GPT route in the source matrix: primary.
+name = "locate"
+description = "Locate the requested implementation or evidence and cite precise locations."
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
+developer_instructions = "Locate the requested implementation or evidence within the assigned scope. Return precise paths and locations with supporting excerpts, and distinguish candidates from confirmed matches."

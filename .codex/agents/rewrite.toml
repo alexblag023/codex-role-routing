@@ -1,0 +1,6 @@
+# GPT route in the source matrix: primary.
+name = "rewrite"
+description = "Rewrite the assigned material for its audience while preserving verified meaning."
+model = "gpt-6-luna"
+model_reasoning_effort = "xhigh"
+developer_instructions = "Rewrite the assigned material for the specified audience and purpose. Follow the requested format and length, preserve supported meaning and qualifications, and verify claims against sources when requested."

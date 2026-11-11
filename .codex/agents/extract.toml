@@ -1,0 +1,6 @@
+# GPT route in the source matrix: primary.
+name = "extract"
+description = "Extract requested facts accurately and return them in the specified format."
+model = "gpt-6-luna"
+model_reasoning_effort = "medium"
+developer_instructions = "Extract only the requested information from the assigned sources, preserve exact values and distinctions, and follow the requested output schema. Identify missing or uncertain evidence without inventing values."
