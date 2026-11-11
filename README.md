@@ -4,7 +4,10 @@ Codex custom agent profiles bind delegation roles to GPT models and reasoning ef
 
 ## Install
 
-Copy files from `.codex/agents/` into the target project's `.codex/agents/` directory. Mark the target project as trusted in Codex and start a new session there so the project-local agent profiles are loaded. In the structured subagent call, set `agent_type` to the profile name, for example `expert_review`; `task_name` is only a task identifier and does not select a profile. Leave model and effort unset so Codex reads both from the selected profile.
+- **Personal installation:** Copy the TOML files from `.codex/agents/` into `~/.codex/agents/` (`%USERPROFILE%\.codex\agents\` on Windows). Start a new Codex session to load the personal profiles.
+- **Project installation:** Copy the same files into the target project's `.codex/agents/` directory. Mark the target project as trusted in Codex and start a new session there.
+
+Select the profile through the structured `agent_type` field, for example `expert_review`. Use `task_name` as the child task identifier. Leave model and reasoning effort unset to use the values in the profile.
 
 Each profile comment records whether GPT was primary or backup in the source matrix. The profile pins that GPT route for Codex. It does not implement primary-provider selection or provider failover. `audit`, `classify`, `compliance_check`, `fact_check`, `patch_proposal`, and `source_synthesis` therefore run on their configured GPT backup in Codex, even though the matrix primary is `session_model`.
 
@@ -19,6 +22,10 @@ Install PyYAML in the Python environment, then run from this directory:
 To check a project's installed profiles against the same matrix:
 
     python scripts/check_role_profiles.py --profiles ../.codex/agents
+
+To check the personal profiles in Windows PowerShell:
+
+    python scripts/check_role_profiles.py --profiles "$env:USERPROFILE/.codex/agents"
 
 Validation fails on missing or extra roles, filename/name disagreement and any model/effort mismatch.
 
@@ -35,6 +42,8 @@ Find the parent thread ID and daily Codex session directory, then pass the exact
     python scripts/itest_codex_delegation.py "$sessionDay" "$parentThreadId" architecture audit expert_review
 
 The verifier checks each child journal for a named role, the model and effort recorded in `turn_context`, and the exact completion marker. A child with a missing `agent_role` is reported as an unverified profile route, even if an ordinary child task completed successfully. This distinguishes successful generic delegation from verified named-profile routing.
+
+To verify personal loading, run the smoke in a fresh directory outside a project that defines agent profiles. For a directory outside a Git repository, add `--skip-git-repo-check` to the CLI command. Pass `--profiles "$env:USERPROFILE/.codex/agents"` to the verifier in PowerShell so it checks the installed profiles.
 
 ## Contents
 
